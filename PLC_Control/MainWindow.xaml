@@ -53,15 +53,15 @@
                 </StackPanel>
                 <Button x:Name="MoveButton"
                         Margin="0,8,0,0"
-                        Content="移动"
+                        Content="正向移动"
                         Click="MoveButton_Click" />
-                <Button x:Name="BackToZeroButton"
+                <Button x:Name="BackMoveButton"
                         Margin="0,8,0,0"
-                        Content="回原点"
-                        Click="BackToZeroButton_Click" />
+                        Content="反向移动"
+                        Click="BackMoveButton_Click" />
                 <Button x:Name="ResetZeroFlagButton"
                         Margin="0,8,0,0"
-                        Content="清除原点标志 (M3)"
+                        Content="紧急停止"
                         Click="ResetZeroFlagButton_Click" />
                 <TextBlock Margin="0,12,0,0"
                            FontSize="11"

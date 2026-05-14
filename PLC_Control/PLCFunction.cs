@@ -13,49 +13,41 @@ namespace PLC_Control
         public static bool OpenPLC(PLCController plc) => plc.Open();
 
         // 设定原点：发出 M0 脉冲 → 梯形图执行 RST M1/M2、停止脉冲、清零当前位置、SET M10
-        public static bool SetZeroPoint(PLCController plc)
-        {
-            if (!plc.WriteData("M0", 1)) return false;
-            Thread.Sleep(100);             // 确保 PLC 扫描到 M0=ON
-            return plc.WriteData("M0", 0);
-        }
+        public static bool SetZeroPoint(PLCController plc) => plc.SendPulse("M0");
 
         // 绝对定位移动：先写目标值 D0，再发 M1 脉冲
-        public static bool Move(PLCController plc, int step)
+        public static bool Move(PLCController plc, int freq,int step)
         {
             // 1. 确保原点已经设定（M10=ON）
-            if (!plc.ReadData("M10", out int m10) || m10 == 0)
+            if (!plc.ReadData("M10", out int m10) || m10 == 0 || step <= 0)
                 return false;
 
             // 2. 写入目标位置
-            if (!plc.WriteData("D0", step))
+            if (!plc.WriteData("D0", freq))
                 return false;
-
+            if (!plc.WriteData("D1", step))
+                return false;
             // 3. 发出 M1 脉冲
-            if (!plc.WriteData("M1", 1)) return false;
-            Thread.Sleep(100);
-            return plc.WriteData("M1", 0);
+            return plc.SendPulse("M1");
         }
 
         // 回原点：发 M2 脉冲 → DRVA K0
-        public static bool BackToZeroPoint(PLCController plc)
+        public static bool BackMove(PLCController plc, int freq, int step)
         {
-            // 检查原点已设定
-            if (!plc.ReadData("M10", out int m10) || m10 == 0)
+            // 1. 确保原点已经设定（M10=ON）
+            if (!plc.ReadData("M10", out int m10) || m10 == 0 || step <= 0)
                 return false;
 
-            // 发出 M2 脉冲
-            if (!plc.WriteData("M2", 1)) return false;
-            Thread.Sleep(100);
-            return plc.WriteData("M2", 0);
+            // 2. 写入目标位置
+            if (!plc.WriteData("D0", freq))
+                return false;
+            if (!plc.WriteData("D1", step))
+                return false;
+            // 3. 发出 M2 脉冲
+            return plc.SendPulse("M2");
         }
 
         // 可选：清除原点标志（触发 M3）
-        public static bool ResetZeroPointFlag(PLCController plc)
-        {
-            if (!plc.WriteData("M3", 1)) return false;
-            Thread.Sleep(100);
-            return plc.WriteData("M3", 0);
-        }
+        public static bool ResetZeroPointFlag(PLCController plc) => plc.SendPulse("M3");
     }
 }

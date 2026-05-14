@@ -92,5 +92,11 @@ namespace PLC_Control
 
             return false;
         }
+        public bool SendPulse(string deviceName)
+        {
+            if (!WriteData(deviceName, 1)) return false;
+            Thread.Sleep(100);
+            return WriteData(deviceName, 0);
+        }
     }
 }

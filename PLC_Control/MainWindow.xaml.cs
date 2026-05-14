@@ -22,7 +22,7 @@ namespace PLC_Control
             StationTextBox.IsEnabled = !connected;
             SetZeroButton.IsEnabled = connected;
             MoveButton.IsEnabled = connected;
-            BackToZeroButton.IsEnabled = connected;
+            BackMoveButton.IsEnabled = connected;
             ResetZeroFlagButton.IsEnabled = connected;
         }
 
@@ -140,7 +140,7 @@ namespace PLC_Control
             SetActionButtonsEnabled(false);
             try
             {
-                bool ok = await Task.Run(() => PLCFunction.Move(_plc, step)).ConfigureAwait(true);
+                bool ok = await Task.Run(() => PLCFunction.Move(_plc, 1, step)).ConfigureAwait(true);
                 SetStatus(ok
                     ? $"移动：成功（目标 {step}）"
                     : "移动：失败（需已设定原点且 M10=ON，或通信/写入异常）");
@@ -151,15 +151,22 @@ namespace PLC_Control
             }
         }
 
-        private async void BackToZeroButton_Click(object sender, RoutedEventArgs e)
+        private async void BackMoveButton_Click(object sender, RoutedEventArgs e)
         {
             if (_plc == null)
                 return;
 
+            if (!int.TryParse(TargetPositionTextBox.Text.Trim(), out int step))
+            {
+                MessageBox.Show(this, "请输入有效的整数作为目标位置（D0）。", "目标位置无效",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             SetActionButtonsEnabled(false);
             try
             {
-                bool ok = await Task.Run(() => PLCFunction.BackToZeroPoint(_plc)).ConfigureAwait(true);
+                bool ok = await Task.Run(() => PLCFunction.BackMove(_plc, 1, step)).ConfigureAwait(true);
                 SetStatus(ok
                     ? "回原点：成功"
                     : "回原点：失败（需已设定原点且 M10=ON，或通信/写入异常）");
@@ -180,8 +187,8 @@ namespace PLC_Control
             {
                 bool ok = await Task.Run(() => PLCFunction.ResetZeroPointFlag(_plc)).ConfigureAwait(true);
                 SetStatus(ok
-                    ? "清除原点标志：成功（已写 M3）"
-                    : "清除原点标志：失败（请确认已连接）");
+                    ? "急停成功（已写 M3）"
+                    : "急停失败（请确认已连接）");
             }
             finally
             {
@@ -193,7 +200,7 @@ namespace PLC_Control
         {
             SetZeroButton.IsEnabled = enabled && _plc != null;
             MoveButton.IsEnabled = enabled && _plc != null;
-            BackToZeroButton.IsEnabled = enabled && _plc != null;
+            BackMoveButton.IsEnabled = enabled && _plc != null;
             ResetZeroFlagButton.IsEnabled = enabled && _plc != null;
         }
     }
