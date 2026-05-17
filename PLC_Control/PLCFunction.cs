@@ -19,7 +19,7 @@ namespace PLC_Control
         public static bool Move(PLCController plc, int freq,int step)
         {
             // 1. 确保原点已经设定（M10=ON）
-            if (step <= 0)
+            if (step < 0)
                 return false;
 
             // 2. 写入目标位置
@@ -35,7 +35,7 @@ namespace PLC_Control
         public static bool BackMove(PLCController plc, int freq, int step)
         {
             // 1. 确保原点已经设定（M10=ON）
-            if (step <= 0)
+            if (step < 0)
                 return false;
 
             // 2. 写入目标位置

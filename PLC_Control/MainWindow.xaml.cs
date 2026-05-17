@@ -130,9 +130,16 @@ namespace PLC_Control
             if (_plc == null)
                 return;
 
+            if (!int.TryParse(FrequencyTextBox.Text.Trim(), out int freq) || freq <= 0)
+            {
+                MessageBox.Show(this, "请输入有效的正整数作为频率值（D0）。", "频率值无效",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             if (!int.TryParse(TargetPositionTextBox.Text.Trim(), out int step))
             {
-                MessageBox.Show(this, "请输入有效的整数作为目标位置（D0）。", "目标位置无效",
+                MessageBox.Show(this, "请输入有效的整数作为目标位置（D1）。", "目标位置无效",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -140,9 +147,9 @@ namespace PLC_Control
             SetActionButtonsEnabled(false);
             try
             {
-                bool ok = await Task.Run(() => PLCFunction.Move(_plc, 2, step)).ConfigureAwait(true);
+                bool ok = await Task.Run(() => PLCFunction.Move(_plc, freq, step)).ConfigureAwait(true);
                 SetStatus(ok
-                    ? $"移动：成功（目标 {step}）"
+                    ? $"移动：成功（频率 {freq}，目标 {step}）"
                     : "移动：失败（需已设定原点且 M10=ON，或通信/写入异常）");
             }
             finally
@@ -156,9 +163,16 @@ namespace PLC_Control
             if (_plc == null)
                 return;
 
+            if (!int.TryParse(FrequencyTextBox.Text.Trim(), out int freq) || freq <= 0)
+            {
+                MessageBox.Show(this, "请输入有效的正整数作为频率值（D0）。", "频率值无效",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             if (!int.TryParse(TargetPositionTextBox.Text.Trim(), out int step))
             {
-                MessageBox.Show(this, "请输入有效的整数作为目标位置（D0）。", "目标位置无效",
+                MessageBox.Show(this, "请输入有效的整数作为目标位置（D1）。", "目标位置无效",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -166,9 +180,9 @@ namespace PLC_Control
             SetActionButtonsEnabled(false);
             try
             {
-                bool ok = await Task.Run(() => PLCFunction.BackMove(_plc, 2, step)).ConfigureAwait(true);
+                bool ok = await Task.Run(() => PLCFunction.BackMove(_plc, freq, step)).ConfigureAwait(true);
                 SetStatus(ok
-                    ? "回原点：成功"
+                    ? $"回原点：成功（频率 {freq}，目标 {step}）"
                     : "回原点：失败（需已设定原点且 M10=ON，或通信/写入异常）");
             }
             finally

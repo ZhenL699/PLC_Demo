@@ -44,7 +44,15 @@
                         Content="设定原点"
                         Click="SetZeroButton_Click" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                    <TextBlock VerticalAlignment="Center" Text="目标位置 D0：" />
+                    <TextBlock VerticalAlignment="Center" Text="频率值 D0：" />
+                    <TextBox x:Name="FrequencyTextBox"
+                             Width="120"
+                             Margin="8,0,0,0"
+                             VerticalAlignment="Center"
+                             Text="2" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <TextBlock VerticalAlignment="Center" Text="目标位置 D1：" />
                     <TextBox x:Name="TargetPositionTextBox"
                              Width="120"
                              Margin="8,0,0,0"
