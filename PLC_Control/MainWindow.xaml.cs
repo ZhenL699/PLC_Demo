@@ -140,7 +140,7 @@ namespace PLC_Control
             SetActionButtonsEnabled(false);
             try
             {
-                bool ok = await Task.Run(() => PLCFunction.Move(_plc, 1, step)).ConfigureAwait(true);
+                bool ok = await Task.Run(() => PLCFunction.Move(_plc, 2, step)).ConfigureAwait(true);
                 SetStatus(ok
                     ? $"移动：成功（目标 {step}）"
                     : "移动：失败（需已设定原点且 M10=ON，或通信/写入异常）");
@@ -166,7 +166,7 @@ namespace PLC_Control
             SetActionButtonsEnabled(false);
             try
             {
-                bool ok = await Task.Run(() => PLCFunction.BackMove(_plc, 1, step)).ConfigureAwait(true);
+                bool ok = await Task.Run(() => PLCFunction.BackMove(_plc, 2, step)).ConfigureAwait(true);
                 SetStatus(ok
                     ? "回原点：成功"
                     : "回原点：失败（需已设定原点且 M10=ON，或通信/写入异常）");
